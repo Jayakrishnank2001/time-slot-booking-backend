@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/userController')
-const userAuth = require('../middlewares/userAuth')
+const userAuthMiddleware = require('../middlewares/userAuth')
 
-
+router.get('/user-details/:userId',userAuthMiddleware,userController.getUserData)
 
 module.exports=router

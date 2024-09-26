@@ -24,8 +24,7 @@ const userLogin = async (req, res) => {
         } else {
             const admin = await Admin.findOne({ email })
             if (admin) {
-                const passwordMatch = await bcrypt.compare(password, admin.password)
-                if (passwordMatch) {
+                if (password===admin.password) {
                     const token = generateToken({
                         id: admin.id,
                         email: admin.email,

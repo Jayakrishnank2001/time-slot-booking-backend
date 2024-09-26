@@ -6,26 +6,20 @@ const bookingSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    date: {
-        type: String,
+    timeSlotId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'TimeSlot',
         required: true
     },
-    startTime: {
-        type: String,
-        required: true
-    },
-    endTime: {
-        type: String,
-        required: true
+    bookingDate: {
+        type: Date,
+        default: Date.now
     },
     status: {
         type: String,
-        default: 'booked'
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
+        enum: ['confirmed', 'canceled'],
+        default: 'confirmed'
     }
 });
 
-module.exports= mongoose.model('Booking', bookingSchema);
+module.exports = mongoose.model('Booking', bookingSchema);
