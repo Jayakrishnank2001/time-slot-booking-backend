@@ -17,11 +17,6 @@ const timeSlotSchema = new mongoose.Schema({
         type: String,
         enum: ['available', 'booked', 'blocked'],
         default: 'available'
-    },
-    bookingId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Booking',
-        default: null
     }
 });
   

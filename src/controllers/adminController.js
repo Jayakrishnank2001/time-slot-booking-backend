@@ -1,15 +1,25 @@
-const Booking = require('../models/booking')
 const TimeSlot=require('../models/timeSlot')
-
 
 const createTimeSlot = async (req, res) => {
     try {
-        const { date, startTime, endTime, status } = req.body;
+        const { date, startTime, endTime } = req.body;
+        const queryDate = new Date(date);
+        const existingSlot = await TimeSlot.findOne({
+            date: queryDate,
+            $or: [
+                { 
+                    startTime: { $lt: endTime }, 
+                    endTime: { $gt: startTime } 
+                }
+            ]
+        });
+        if (existingSlot) {
+            return res.json({status: 'error', message: 'There is already a slot in this time range'});
+        }
         const newTimeSlot = new TimeSlot({
             date,
             startTime,
-            endTime,
-            status
+            endTime
         });
         await newTimeSlot.save();
         res.status(201).json({status:'success',message: 'Time slot created successfully!'});
