@@ -1,5 +1,4 @@
 const User = require('../models/user')
-const Admin = require('../models/admin')
 const { generateOTP, sendOTPByEmail } = require('../utils/otpGenerator')
 const bcrypt = require('bcrypt')
 const TempUser = require('../models/tempUser')
@@ -15,28 +14,13 @@ const userLogin = async (req, res) => {
                 const token = generateToken({
                     id: user.id,
                     email: user.email,
-                    role: 'user'
                 })
-                return res.status(200).json({ status: 'success', message: 'Authentication Successful', token: token, role:'user' })
+                return res.status(200).json({ status: 'success', message: 'Authentication Successful', token: token })
             } else {
                 return res.json({ status: 'error', message: 'Password is incorrect' })
             }
         } else {
-            const admin = await Admin.findOne({ email })
-            if (admin) {
-                if (password===admin.password) {
-                    const token = generateToken({
-                        id: admin.id,
-                        email: admin.email,
-                        role: 'admin'
-                    })
-                    return res.status(200).json({ status: 'success', message: 'Authentication Successful', token: token, role:'admin' })
-                } else {
-                    return res.json({ status: 'error', message: 'Password is incorrect' })
-                }
-            } else {
-                return res.json({ status: 'error', message: 'Email is incorrect' })
-            }
+            return res.json({ status: 'error', message: 'Email is incorrect' })
         }
     } catch (error) {
         console.error(error);
