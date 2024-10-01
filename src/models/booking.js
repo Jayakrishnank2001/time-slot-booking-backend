@@ -11,14 +11,21 @@ const bookingSchema = new mongoose.Schema({
         ref: 'TimeSlot',
         required: true
     },
-    bookingDate: {
+    bookedDate: {
         type: Date,
         default: Date.now
+    },
+    invitee: {
+        type: String
     },
     status: {
         type: String,
         enum: ['confirmed', 'canceled'],
         default: 'confirmed'
+    },
+    bookingDate: {
+        type: Date,
+        required:true
     }
 });
 
