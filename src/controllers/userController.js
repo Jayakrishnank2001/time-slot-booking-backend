@@ -18,8 +18,28 @@ const getUserData = async (req, res) => {
 
 const getSlots = async (req, res) => {
     try {
-        const slots = await TimeSlot.find()
-        res.status(200).json({ status: 'success', slots: slots })
+        const { date, userId } = req.query
+        const bookingDate = new Date(date)
+        const currentTime = new Date();
+        const slots = await TimeSlot.find().sort({ startTime: 1 })
+        const bookings = await Booking.find({
+            userId: userId,
+            bookingDate: {
+                $gte: new Date(bookingDate.setHours(0, 0, 0, 0)),
+                $lt: new Date(bookingDate.setHours(23, 59, 59, 999))
+            },
+            status: 'confirmed'
+        }).populate('timeSlotId')
+        const filteredSlots = slots.filter(slot => {
+            const isBooked = bookings.some(booking =>
+                booking.timeSlotId._id.toString() === slot._id.toString()
+            );
+            const slotDateTime = new Date(bookingDate.toDateString() + ' ' + slot.startTime);
+            const isPastSlot = bookingDate.toDateString() === currentTime.toDateString() &&
+                slotDateTime < currentTime;
+            return !isBooked && !isPastSlot;
+        });
+        res.status(200).json({ status: 'success', slots: filteredSlots })
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
