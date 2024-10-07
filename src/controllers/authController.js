@@ -80,6 +80,7 @@ const resendOTP = async (req, res) => {
         const { email } = req.body
         const tempUser = await TempUser.findOne({ email });
         const newOTP = generateOTP()
+        console.log(newOTP, tempUser)
         tempUser.otp = newOTP;
         await tempUser.save();
         await sendOTPByEmail(email, newOTP);

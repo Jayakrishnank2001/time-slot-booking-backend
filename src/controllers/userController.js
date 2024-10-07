@@ -48,14 +48,15 @@ const getSlots = async (req, res) => {
 
 const bookSlot = async (req, res) => {
     try {
-        const { userId, timeSlotId, invitee, bookingDate } = req.body
+        const { userId, timeSlotId, invitee, bookingDate, endTime } = req.body
         const utcDate = new Date(bookingDate);
         const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
         const booking = new Booking({
             userId,
             timeSlotId,
             invitee,
-            bookingDate: istDate
+            bookingDate: istDate,
+            endTime
         })
         await booking.save()
         res.status(200).json({ status: 'success', message: 'Slot Booked Successfully' })
